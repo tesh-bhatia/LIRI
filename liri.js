@@ -2,29 +2,35 @@ require("dotenv").config();
 
 var keys = require('./keys'),
     Spotify = require('node-spotify-api'),
-    request = require('request');
+    request = require('request'),
+    fs = require('fs');
 
 var command = process.argv[2],
     searchItem = process.argv[3];
 
-switch(command){
-    case 'my-tweets':
-        console.log('Getting tweets...')
-        break;
-    case 'spotify-this-song':
-        console.log('Searching spotify...')
-        spotifySong()
-        break;
-    case 'movie-this':
-        console.log('Searching for movie...')
-        movieThis()
-        break;
-    case 'do-what-it-says':
-        console.log('Reading file...')
-        break;
+doCommand(command, searchItem)
+
+function doCommand (command, searchItem) {
+    switch(command){
+        case 'my-tweets':
+            console.log('Getting tweets...')
+            break;
+        case 'spotify-this-song':
+            console.log('Searching spotify...')
+            spotifySong(searchItem)
+            break;
+        case 'movie-this':
+            console.log('Searching for movie...')
+            movieThis(searchItem)
+            break;
+        case 'do-what-it-says':
+            console.log('Reading file...')
+            readTheFile();
+            break;
+    }
 }
 
-function spotifySong(){
+function spotifySong(searchItem){
     var spotify = new Spotify(keys.spotify)
     var query = searchItem ? searchItem : 'The Sign',
         trackNum = searchItem ? 0 : 5 //done in order to song by Ace of Bass
@@ -45,7 +51,7 @@ function spotifySong(){
     });
 }
 
-function movieThis(){
+function movieThis(searchItem){
     var movie = searchItem ? searchItem : "Remember%20the%20Titans" //I hated Mr. Nobody so we're not using that shit
     var endpoint = 'https://www.omdbapi.com/?apikey=trilogy&t=' + movie
 
@@ -67,5 +73,19 @@ function movieThis(){
             '* ' + body.Language + '\n' +
             '* ' + body.Plot + '\n' +
             '* ' + body.Actors + '\n')
+    })
+}
+
+function readTheFile () {
+    fs.readFile('random.txt', 'utf-8', function(error, data){
+        if (error) {
+            return console.log(error);
+        }
+
+        var dataArr = data.split(',')
+        var comm = dataArr[0]
+        var search = dataArr[1]
+
+        doCommand(comm, search)
     })
 }
