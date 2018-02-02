@@ -14,19 +14,15 @@ doCommand(command, searchTerm)
 function doCommand (command, searchItem) {
     switch(command){
         case 'my-tweets':
-            console.log('Getting tweets...')
             getTweets();
             break;
         case 'spotify-this-song':
-            console.log('Searching spotify...')
             spotifySong(searchItem)
             break;
         case 'movie-this':
-            console.log('Searching for movie...')
             movieThis(searchItem)
             break;
         case 'do-what-it-says':
-            console.log('Reading file...')
             readTheFile();
             break;
         default:
@@ -69,6 +65,7 @@ function spotifySong(searchItem){
     var song = track.name;
     var result = '* ' + artist + '\n* ' + song + '\n* ' + ext_url + '\n* ' + album 
     + '\n'
+    
     console.log(result); 
     logResults('\nCommand: ' + command + ' ' + secondArg + '\n' + result)
     });
@@ -79,14 +76,13 @@ function movieThis(searchItem){
     var endpoint = 'https://www.omdbapi.com/?apikey=trilogy&t=' + movie
     var secondArg = searchTerm ? searchTerm : '' //accurately log command line entry
 
-    console.log(endpoint);
-
     request.get(endpoint, function(err, res, body){
         if(err){
             return console.log(err)
         }
 
         body = JSON.parse(body) //turn string response to JSON so it can be referenced
+        
         var result = '* ' + body.Title + '\n' +
         '* ' + body.Year + '\n' +
         '* IMDB rating: ' + body.Ratings[0].Value + '\n' +
@@ -120,7 +116,5 @@ function logResults (text) {
         if(err){
             return console.log(error)
         }
-
-        console.log("Log updated!")
     } )
 }
